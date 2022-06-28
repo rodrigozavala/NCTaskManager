@@ -30,6 +30,9 @@ public class TaskImpl implements Task{
      * @param time: current time
      */
     public TaskImpl(String title, int time){
+        if(time<0){
+            throw new IllegalArgumentException("time must be positive or zero");
+        }
         setTitle(title);
         setTime(time);
         setActive(false);
@@ -45,6 +48,14 @@ public class TaskImpl implements Task{
      * @param interval: time interval that specifies how often the task will be repeated
      */
     public TaskImpl(String title, int start, int end, int interval){
+        if(start<0 || end<0){
+            throw new IllegalArgumentException("Time must be positive or zero");
+        } else if (start>=end) {
+            throw new IllegalArgumentException("start must be less than end time-mark");
+
+        } else if (interval<=0) {
+            throw new IllegalArgumentException("interval must be positive");
+        }
         setTitle(title);
         setTime(start,end,interval);
         setActive(false);
@@ -52,6 +63,9 @@ public class TaskImpl implements Task{
 
     @Override
     public int nextTimeAfter(int current) {
+        if (current<0){
+            throw new IllegalArgumentException("time must be positive or zero");
+        }
         if(isActive()==false){//Task isn't active
             return -1;
         } else if (isRepeated()==false) {//task is active and non-repetitive
@@ -109,6 +123,9 @@ public class TaskImpl implements Task{
 
     @Override
     public void setTime(int time) {
+        if (time<0){
+            throw new IllegalArgumentException("time must be positive or zero");
+        }
         if(isRepeated()){
             this.repeated=false;
         }
@@ -140,7 +157,14 @@ public class TaskImpl implements Task{
 
     @Override
     public void setTime(int start, int end, int interval) {
+        if(start<0 || end<0){
+            throw new IllegalArgumentException("Time must be positive or zero");
+        } else if (start>=end) {
+            throw new IllegalArgumentException("start must be minor than end time-mark");
 
+        } else if (interval<=0) {
+            throw new IllegalArgumentException("interval must be positive");
+        }
         if(isRepeated()==false){
             this.repeated=true;
         }
