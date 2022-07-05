@@ -1,6 +1,6 @@
 package mx.tc.j2se.tasks;
 
-public class ArrayTaskListImpl implements ArrayTaskList{
+public class ArrayTaskListImpl extends AbstractTaskList{
 
 
 
@@ -22,8 +22,7 @@ public class ArrayTaskListImpl implements ArrayTaskList{
     }
 
 
-
-
+    /*
     @Override
     public ArrayTaskList incoming(int from, int to) {
         if(myTaskArray==null){
@@ -39,6 +38,7 @@ public class ArrayTaskListImpl implements ArrayTaskList{
         }
         return myList;
     }
+     */
 
     @Override
     public void add(Task task) {

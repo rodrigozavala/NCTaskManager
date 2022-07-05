@@ -1,6 +1,6 @@
 package mx.tc.j2se.tasks;
 
-public class LinkedTaskListImpl implements LinkedTaskList {
+public class LinkedTaskListImpl extends AbstractTaskList {
 
 
     private link head;
@@ -128,6 +128,7 @@ public class LinkedTaskListImpl implements LinkedTaskList {
         return null;
     }
 
+    /*
     @Override
     public LinkedTaskList incoming(int from, int to) {
         if (from<0 || to<0){
@@ -150,6 +151,7 @@ public class LinkedTaskListImpl implements LinkedTaskList {
         }
         return new LinkedTaskListImpl();
     }
+     */
 
     private class link{
         private link previous;

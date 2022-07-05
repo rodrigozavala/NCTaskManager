@@ -76,6 +76,9 @@ class LinkedTaskListImplTest {
 
     @Test
     void getTask() {
+        //this is actually a test of the TaskListFactory
+        LinkedTaskListImpl myLinkedList=(LinkedTaskListImpl) TaskListFactory.createTaskList(ListTypes.types.LINKED);
+        System.out.println("Class is: "+myLinkedList.getClass());
     }
 
     @Test
@@ -93,7 +96,7 @@ class LinkedTaskListImplTest {
         myTaskList.add(t2);
         myTaskList.add(t3);
         myTaskList.add(t4);
-        LinkedTaskList subList=  myTaskList.incoming(30,75);
+        LinkedTaskListImpl subList= (LinkedTaskListImpl) myTaskList.incoming(30,75);
         System.out.println("The content of the sublist");
         for (int i=0;i< subList.size();i++){
             System.out.println(subList.getTask(i).getTitle());
