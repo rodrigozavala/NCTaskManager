@@ -4,8 +4,8 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
 
     private link head;
-
-
+    private int sizeList=0;
+    private link tail;
     private boolean compareTasks(Task t1,Task t2){
         if (t1==null || t2==null){
             return false;
@@ -19,10 +19,10 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
 
     public LinkedTaskListImpl(){
+
     }
 
     public LinkedTaskListImpl(Task initialTask){
-
         head=null;
         this.add(initialTask);
     }
@@ -30,20 +30,34 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
     @Override
     public void add(Task task) {
-        if (this.head!=null){//if head already exist
-            link tail=this.head;
-            while (tail.isTail()==false){//repeats until the real tail is found
-                tail=tail.next;
-            }
-            tail.next=new link(task,tail,null);
-            tail.next.setIndex(tail.getIndex()+1);
-        }else{//head doesn't exist
-            if(task==null){
-                throw new NullPointerException("task cannot be null");
-            }
-            head=new link(task,null,null);
-            head.setIndex(0);
+        if(task==null){
+            throw new NullPointerException("task cannot be null");
         }
+        //ADDING
+        if (this.head!=null){//if head already exist
+            /*
+            link current=this.head;
+            while (current.isTail()==false){//repeats until the real tail is found
+                current=current.next;
+            }
+            current.next=new link(task,current,null);*/
+            /*if (this.sizeList==1){
+                this.head.next=new link(task,head,null);
+                this.tail=this.head.next;
+                this.tail.previous=this.head;
+            }else{
+                this.tail.next=new link(task,tail,null);
+                this.tail=this.tail.next;
+
+            }
+             */
+            this.tail.next=new link(task,tail,null);
+            this.tail=this.tail.next;
+        }else{//head doesn't exist
+            this.head=new link(task,null,null);
+            this.tail=head;
+        }
+        this.sizeList+=1;
     }
 
     @Override
@@ -51,47 +65,32 @@ public class LinkedTaskListImpl extends AbstractTaskList {
         if(task==null){
             throw new NullPointerException("task cannot be null");
         }
-        if(this.head!=null){
-            link tail=this.head;
-            while (tail.isTail()==false){
-                if(compareTasks(tail.getTask(),task)){//we found the wanted task
 
-                    if(tail.isHead()){//we want to get rid of the head
+        if(this.head!=null){//if head exists
+            link current=this.head;
+
+            while (current.isTail()==false){
+                if(compareTasks(current.getTask(),task)){//we found the wanted task
+                    this.sizeList-=1;
+                    //REMOVING
+                    if(current.isHead()){//we want to get rid of the head
                         this.head=this.head.next;//now head points in the next direction
                         this.head.previous=null;
 
-                        //Reindexing all the links
-                        if(this.head!=null){
-                            this.head.setIndex(0);
-                            link current=this.head.next;
-                            while(current!=null){
-                                current.setIndex(current.previous.getIndex()+1);
-                                current=current.next;
-                            }
-                        }
-
                     }else{//we want to get rid of a link different from the head and tail
-                        link aux=tail.next;
-                        aux.previous=tail.previous;
-                        tail.previous.next=aux;
-                        //Reindexing all the links
-                        link current=aux.previous;
-                        while(current!=null){
-                            if (current.isHead()){
-                                current.setIndex(0);
-                            }else{
-                                current.setIndex(current.previous.getIndex()+1);
-                            }
-                            current=current.next;
-                        }
+                        link aux=current.next;
+                        aux.previous=current.previous;
+                        current.previous.next=aux;
+
                     }
                     return true;
                 }
-                tail=tail.next;
+                current=current.next;
             }
-            if(compareTasks(tail.getTask(),task)){//the tail is the link we want to remove
-                tail.previous.next=null;
-                //We don't need to reindex
+            if(compareTasks(current.getTask(),task)){//the tail is the link we want to remove
+                this.sizeList-=1;
+                current.previous.next=null;
+                this.tail=current.previous;
                 return true;
             }
             //if we didn't find the wanted task in the list
@@ -103,55 +102,24 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
     @Override
     public int size() {
-        if(this.head!=null){
-            int counter=0;
-            link tail=this.head;
-            while(tail.isTail()==false){
-                counter++;
-                tail=tail.next;
-            }
-            return counter+1;
-        }else{
-            return 0;
-        }
+        return sizeList;
     }
 
     @Override
     public Task getTask(int index) {
         link current=this.head;
+        int counter=0;
         while (current!=null){
-            if (current.getIndex()==index){
+            if (counter==index){
                 return current.getTask();
             }
+            counter+=1;
             current=current.next;
         }
         return null;
     }
 
-    /*
-    @Override
-    public LinkedTaskList incoming(int from, int to) {
-        if (from<0 || to<0){
-            throw new IllegalArgumentException("Time marks cannot be negative");
-        } else if (to<=from) {
-            throw new IllegalArgumentException("'To' time mark cannot be minor or equal to 'from' time mark");
-        }
-        if(this.head!=null){
-            LinkedTaskListImpl myList=new LinkedTaskListImpl();
-            link current=this.head;
-            while (current!=null){
-                if (current.getTask().nextTimeAfter(from)!=-1){//then task is active and can be completed
-                    if (current.getTask().nextTimeAfter(from)<to && current.getTask().nextTimeAfter(from)>from){
-                        myList.add(current.getTask());
-                    }
-                }
-                current=current.next;
-            }
-            return  myList;
-        }
-        return new LinkedTaskListImpl();
-    }
-     */
+
 
     private class link{
         private link previous;
@@ -159,7 +127,7 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
         private Task task;
 
-        private int index;
+
 
         /**
          * Empty class constructor
@@ -237,13 +205,6 @@ public class LinkedTaskListImpl extends AbstractTaskList {
         }
 
 
-        public int getIndex() {
-            return index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
-        }
     }
 
 }

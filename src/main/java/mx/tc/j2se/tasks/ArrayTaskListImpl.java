@@ -49,11 +49,16 @@ public class ArrayTaskListImpl extends AbstractTaskList{
             myTaskArray =new Task[]{task};
         }else{
             int lengthArray= myTaskArray.length;
+            /*
             Task[] oldOne= new Task[lengthArray];
             System.arraycopy(myTaskArray,0,oldOne,0,lengthArray);
             myTaskArray =new Task[lengthArray+1];
             System.arraycopy(oldOne,0, myTaskArray,0,lengthArray);//
-            System.arraycopy(new Task[]{task},0, myTaskArray,lengthArray,1);
+            System.arraycopy(new Task[]{task},0, myTaskArray,lengthArray,1);*/
+            Task[] newOne= new Task[lengthArray+1];
+            System.arraycopy(myTaskArray,0,newOne,0,lengthArray);
+            newOne[lengthArray]=task;
+            myTaskArray=newOne;
         }
     }
 

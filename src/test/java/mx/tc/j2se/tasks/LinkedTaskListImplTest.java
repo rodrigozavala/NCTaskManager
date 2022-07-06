@@ -39,35 +39,65 @@ class LinkedTaskListImplTest {
         TaskImpl t3= new TaskImpl("Eating candy",6,54,6);
         TaskImpl t4=new TaskImpl("Working",15,50,5);
         TaskImpl t5=new TaskImpl("Working harder",15,50,5);
-        TaskImpl t6=null;
+        TaskImpl t6=new TaskImpl("Working harder and better",15,50,5);
+        TaskImpl t7=new TaskImpl("Singing dark ancient songs",15,50,5);
         myTaskList.add(t1);
         myTaskList.add(t2);
         myTaskList.add(t2);
         myTaskList.add(t3);
+        myTaskList.add(t6);
         System.out.println("### The content of the list");
         for (int i=0;i< myTaskList.size();i++){
             System.out.println(myTaskList.getTask(i).getTitle());
             System.out.println(myTaskList.getTask(i).getEndTime());
         }
         System.out.println("The task was removed: "+myTaskList.remove(t4));
-        System.out.println("### The content of the list Now: ");
+        System.out.println("### The content of the list Now: "+myTaskList.size());
         for (int i=0;i< myTaskList.size();i++){
             System.out.println(myTaskList.getTask(i).getTitle());
             System.out.println(myTaskList.getTask(i).getEndTime());
         }
         System.out.println("The task: "+ t5.getTitle()+" was removed: "+myTaskList.remove(t5));
-        System.out.println("### The content of the list Now: ");
+        System.out.println("### The content of the list Now:"+myTaskList.size());
         for (int i=0;i< myTaskList.size();i++){
             System.out.println(myTaskList.getTask(i).getTitle());
             System.out.println(myTaskList.getTask(i).getEndTime());
         }
 
-        System.out.println("The task: null was removed: "+myTaskList.remove(t6));
+        System.out.println("The task: 6 was removed: "+myTaskList.remove(t6));
+        System.out.println("### The content of the list Now: "+myTaskList.size());
+        for (int i=0;i< myTaskList.size();i++){
+            System.out.println(myTaskList.getTask(i).getTitle());
+            System.out.println(myTaskList.getTask(i).getEndTime());
+        }
+        myTaskList.add(t7);
+
+        System.out.println("The task 7 was added "+t7.getTitle());
         System.out.println("### The content of the list Now: ");
         for (int i=0;i< myTaskList.size();i++){
             System.out.println(myTaskList.getTask(i).getTitle());
             System.out.println(myTaskList.getTask(i).getEndTime());
         }
+        System.out.println("The task: 7 was removed: "+myTaskList.remove(t7));
+        System.out.println("### The content of the list Now: "+myTaskList.size());
+        for (int i=0;i< myTaskList.size();i++){
+            System.out.println(myTaskList.getTask(i).getTitle());
+            System.out.println(myTaskList.getTask(i).getEndTime());
+        }
+        System.out.println("The task: 1 was removed: "+myTaskList.remove(t1));
+        System.out.println("### The content of the list Now: "+myTaskList.size());
+        for (int i=0;i< myTaskList.size();i++){
+            System.out.println(myTaskList.getTask(i).getTitle());
+            System.out.println(myTaskList.getTask(i).getEndTime());
+        }
+        myTaskList.add(t1);
+        System.out.println("The task 1 was added "+t1.getTitle());
+        System.out.println("### The content of the list Now: "+myTaskList.size());
+        for (int i=0;i< myTaskList.size();i++){
+            System.out.println(myTaskList.getTask(i).getTitle());
+            System.out.println(myTaskList.getTask(i).getEndTime());
+        }
+
     }
 
     @Test
