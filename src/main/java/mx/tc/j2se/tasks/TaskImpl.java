@@ -1,10 +1,12 @@
 package mx.tc.j2se.tasks;
 
+import java.util.Objects;
+
 /**
  * TaskImp1 class implements the Task Interface
  * @author Rodrigo Zavala
  */
-public class TaskImpl implements Task{
+public class TaskImpl implements Task,Cloneable{
     /** Task's title*/
     private String title;
     private boolean active;
@@ -176,5 +178,48 @@ public class TaskImpl implements Task{
     @Override
     public boolean isRepeated() {
         return this.repeated;
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if(this == otherObject){
+            return true;
+        }
+        if(otherObject==null || getClass()!=otherObject.getClass()){
+            return false;
+        }
+
+        TaskImpl t= (TaskImpl)otherObject;
+        boolean var1=this.getTitle().equals(t.getTitle())&& this.isActive()==t.isActive();
+        boolean var2= this.isRepeated()==t.isRepeated() && this.getEndTime()==t.getEndTime();
+        boolean var3= this.getTime()==t.getTime() && this.getStartTime()==t.getStartTime();
+        boolean var4= this.getRepeatInterval()==t.getRepeatInterval();
+        return  var1 && var2 && var3 && var4;
+
+    }
+
+    @Override
+    public String toString() {
+        return "TaskImpl{" +
+                "title='" + title + '\'' +
+                ", active=" + active +
+                ", repeated=" + repeated +
+                ", time=" + time +
+                ", interval=" + interval +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
+    //@Override
+    protected TaskImpl clone() throws CloneNotSupportedException {
+
+        TaskImpl t= (TaskImpl) super.clone();
+        return t;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, active, repeated, time, interval, start, end)+title.length()^2;
     }
 }

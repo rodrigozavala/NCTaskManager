@@ -1,8 +1,8 @@
 package mx.tc.j2se.tasks;
 
+import java.util.stream.Stream;
+
 public class ArrayTaskListImpl extends AbstractTaskList{
-
-
 
     private Task [] myTaskArray;
 
@@ -13,33 +13,6 @@ public class ArrayTaskListImpl extends AbstractTaskList{
     }
 
 
-    private boolean compareTasks(Task t1,Task t2){
-        boolean var1=t1.getTitle().equals(t2.getTitle())&& t1.isActive()==t2.isActive();
-        boolean var2= t1.isRepeated()==t2.isRepeated() && t1.getEndTime()==t2.getEndTime();
-        boolean var3= t1.getTime()==t2.getTime() && t1.getStartTime()==t2.getStartTime();
-        boolean var4= t1.getRepeatInterval()==t2.getRepeatInterval();
-        return  var1 && var2 && var3 && var4;
-    }
-
-
-    /*
-    @Override
-    public ArrayTaskList incoming(int from, int to) {
-        if(myTaskArray==null){
-            return new ArrayTaskListImpl();
-        }
-        ArrayTaskList myList=new ArrayTaskListImpl();
-        for (Task tasks: myTaskArray){
-            if (tasks.nextTimeAfter(from)!=-1){//then task is active and can be completed
-                if (tasks.nextTimeAfter(from)<to && tasks.nextTimeAfter(from)>from){
-                    myList.add(tasks);
-                }
-            }
-        }
-        return myList;
-    }
-     */
-
     @Override
     public void add(Task task) {
         if (task==null){
@@ -49,12 +22,7 @@ public class ArrayTaskListImpl extends AbstractTaskList{
             myTaskArray =new Task[]{task};
         }else{
             int lengthArray= myTaskArray.length;
-            /*
-            Task[] oldOne= new Task[lengthArray];
-            System.arraycopy(myTaskArray,0,oldOne,0,lengthArray);
-            myTaskArray =new Task[lengthArray+1];
-            System.arraycopy(oldOne,0, myTaskArray,0,lengthArray);//
-            System.arraycopy(new Task[]{task},0, myTaskArray,lengthArray,1);*/
+
             Task[] newOne= new Task[lengthArray+1];
             System.arraycopy(myTaskArray,0,newOne,0,lengthArray);
             newOne[lengthArray]=task;
@@ -71,10 +39,11 @@ public class ArrayTaskListImpl extends AbstractTaskList{
         int indexToRemove=-1;
         //looking for the index of the task to remove
         for (int i = 0; i< myTaskArray.length; i++){
-            if(this.compareTasks(task,myTaskArray[i])){
+            if(task.equals(myTaskArray[i])){
                 indexToRemove=i;
             }
         }
+
 
         if(indexToRemove==-1 || indexToRemove<0){ //the task isn't in the array
             return false;
@@ -118,5 +87,49 @@ public class ArrayTaskListImpl extends AbstractTaskList{
             return myTaskArray[index];
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if(this == otherObject){
+            return true;
+        }
+        if(otherObject==null || getClass()!=otherObject.getClass()){
+            return false;
+        }
+
+        ArrayTaskListImpl A=(ArrayTaskListImpl) otherObject;
+        if(A.size()!=this.size()){
+            return false;
+        }
+        int counter=0;
+        for (Task t: this){
+            if(!t.equals(A.getTask(counter))){
+                return false;
+            }
+            counter++;
+        }
+        return true;
+
+    }
+    @Override
+    public int hashCode() {
+        int sum=this.getClass().toString().length()+this.size()^3;
+        return super.hashCode()+sum;
+    }
+
+    @Override
+    public String toString() {
+        return "ArrayTaskListImpl"+super.toString();
+    }
+    @Override
+    protected ArrayTaskListImpl clone() throws CloneNotSupportedException {
+
+        return (ArrayTaskListImpl) super.clone();
+    }
+
+    @Override
+    public Stream<Task> getStream() {
+        return super.getStream();
     }
 }

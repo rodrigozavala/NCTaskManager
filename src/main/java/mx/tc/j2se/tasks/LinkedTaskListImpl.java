@@ -1,21 +1,16 @@
 package mx.tc.j2se.tasks;
 
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 public class LinkedTaskListImpl extends AbstractTaskList {
 
 
     private link head;
     private int sizeList=0;
     private link tail;
-    private boolean compareTasks(Task t1,Task t2){
-        if (t1==null || t2==null){
-            return false;
-        }
-        boolean var1=t1.getTitle().equals(t2.getTitle())&& t1.isActive()==t2.isActive();
-        boolean var2= t1.isRepeated()==t2.isRepeated() && t1.getEndTime()==t2.getEndTime();
-        boolean var3= t1.getTime()==t2.getTime() && t1.getStartTime()==t2.getStartTime();
-        boolean var4= t1.getRepeatInterval()==t2.getRepeatInterval();
-        return  var1 && var2 && var3 && var4;
-    }
 
 
     public LinkedTaskListImpl(){
@@ -31,26 +26,11 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     @Override
     public void add(Task task) {
         if(task==null){
-            throw new NullPointerException("task cannot be null");
+            throw new NullPointerException("task passed cannot be null");
         }
         //ADDING
         if (this.head!=null){//if head already exist
-            /*
-            link current=this.head;
-            while (current.isTail()==false){//repeats until the real tail is found
-                current=current.next;
-            }
-            current.next=new link(task,current,null);*/
-            /*if (this.sizeList==1){
-                this.head.next=new link(task,head,null);
-                this.tail=this.head.next;
-                this.tail.previous=this.head;
-            }else{
-                this.tail.next=new link(task,tail,null);
-                this.tail=this.tail.next;
 
-            }
-             */
             this.tail.next=new link(task,tail,null);
             this.tail=this.tail.next;
         }else{//head doesn't exist
@@ -63,14 +43,14 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     @Override
     public boolean remove(Task task) {
         if(task==null){
-            throw new NullPointerException("task cannot be null");
+            throw new NullPointerException("task passed cannot be null");
         }
 
         if(this.head!=null){//if head exists
             link current=this.head;
 
             while (current.isTail()==false){
-                if(compareTasks(current.getTask(),task)){//we found the wanted task
+                if(current.getTask().equals(task)){//we found the wanted task
                     this.sizeList-=1;
                     //REMOVING
                     if(current.isHead()){//we want to get rid of the head
@@ -87,7 +67,7 @@ public class LinkedTaskListImpl extends AbstractTaskList {
                 }
                 current=current.next;
             }
-            if(compareTasks(current.getTask(),task)){//the tail is the link we want to remove
+            if(current.getTask().equals(task)){//the tail is the link we want to remove
                 this.sizeList-=1;
                 current.previous.next=null;
                 this.tail=current.previous;
@@ -98,6 +78,11 @@ public class LinkedTaskListImpl extends AbstractTaskList {
         }else{//there is nothing to remove
             return false;
         }
+
+        //Predicate<TaskImpl> myFilter1=t->((TaskImpl)task).equals(t);
+
+        //this.getStream().filter(t->myFilter1.negate().test((TaskImpl) t))
+          //      .toArray();
     }
 
     @Override
@@ -120,6 +105,80 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     }
 
 
+    /**
+     *
+     * @return An Iterator for linked lists
+     */
+    @Override
+    public Iterator<Task> iterator(){
+        //int position1 = position;
+
+        return new Iterator<Task>() {
+            link currentLink=head;
+            @Override
+            public boolean hasNext() {
+
+
+                return currentLink!=null;
+            }
+
+            @Override
+            public Task next() {
+                if (hasNext()){
+                    Task t= currentLink.getTask();
+                    currentLink=currentLink.next;
+                    return t;
+
+                }
+
+                return null;
+            }
+        };
+
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if(this == otherObject){
+            return true;
+        }
+        if(otherObject==null || getClass()!=otherObject.getClass()){
+            return false;
+        }
+
+        LinkedTaskListImpl A=(LinkedTaskListImpl) otherObject;
+
+        if(A.size()!=this.size()){
+            return false;
+        }
+
+        Iterator<Task> iter=A.iterator();
+        for(Task t:this){
+            Task t2=iter.next();
+            if(!t.equals(t2)){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int sum=this.getClass().toString().length()+this.size()^3;
+        return super.hashCode()+sum;
+    }
+
+    @Override
+    public String toString() {
+        return "LinkedTaskListImpl"+super.toString();
+    }
+
+    @Override
+    protected LinkedTaskListImpl clone() throws CloneNotSupportedException {
+        return (LinkedTaskListImpl) super.clone();
+    }
 
     private class link{
         private link previous;
@@ -151,7 +210,7 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
         /**
          * Set the previous link
-         * @param previous
+         * @param previous the previous link wanted
          */
         public void linkPrevious(link previous){
             this.previous=previous;
@@ -159,7 +218,7 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
         /**
          * Set the next link
-         * @param next
+         * @param next the next link wanted
          */
         public void linkNext(link next){
             this.next=next;
@@ -167,8 +226,8 @@ public class LinkedTaskListImpl extends AbstractTaskList {
         }
 
         /**
-         * Return true if current link is head, false otherwise
-         * @return
+         *
+         * @return Return true if current link is head, false otherwise
          */
         public boolean isHead(){
             if (previous==null){
@@ -178,8 +237,8 @@ public class LinkedTaskListImpl extends AbstractTaskList {
         }
 
         /**
-         * Return true if current link is tail, false otherwise
-         * @return
+         *
+         * @return Return true if current link is tail, false otherwise
          */
         public boolean isTail(){
             if (next==null){
@@ -190,7 +249,7 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
         /**
          * Set the task to be store
-         * @param task
+         * @param task the task to store
          */
         public void setTask(Task task){
             this.task= task;
@@ -207,4 +266,8 @@ public class LinkedTaskListImpl extends AbstractTaskList {
 
     }
 
+    @Override
+    public Stream<Task> getStream() {
+        return super.getStream();
+    }
 }
