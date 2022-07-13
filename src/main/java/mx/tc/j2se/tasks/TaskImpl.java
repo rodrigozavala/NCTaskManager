@@ -181,15 +181,15 @@ public class TaskImpl implements Task,Cloneable{
     }
 
     @Override
-    public boolean equals(Object otherObject) {
-        if(this == otherObject){
+    public boolean equals(Object o) {
+        if(this == o){
             return true;
         }
-        if(otherObject==null || getClass()!=otherObject.getClass()){
+        if(o==null || getClass()!=o.getClass()){
             return false;
         }
 
-        TaskImpl t= (TaskImpl)otherObject;
+        TaskImpl t= (TaskImpl)o;
         boolean var1=this.getTitle().equals(t.getTitle())&& this.isActive()==t.isActive();
         boolean var2= this.isRepeated()==t.isRepeated() && this.getEndTime()==t.getEndTime();
         boolean var3= this.getTime()==t.getTime() && this.getStartTime()==t.getStartTime();

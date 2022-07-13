@@ -114,7 +114,12 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
 
             @Override
             public Task next() {
-                return getTask(position++);
+                if(hasNext()){
+                    return getTask(position++);
+                }
+                else {
+                    throw new ArrayIndexOutOfBoundsException("There isn't a new element in this list");
+                }
             }
         };
 
@@ -188,18 +193,30 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
         return cad+"}";
     }
 
-    protected AbstractTaskList clone() throws CloneNotSupportedException {
-        return (AbstractTaskList) super.clone();
-
+    public AbstractTaskList clone() throws CloneNotSupportedException {
+        try{
+            return (AbstractTaskList) super.clone();
+        }catch (CloneNotSupportedException e){
+            System.err.println(e.getMessage()+"\n"+e.getStackTrace());
+            return null;
+        }
     }
 
 
     public Stream<Task> getStream(){
+
         /*
+        if(this.size()==0){
+            throw new RuntimeException("There are not elements in this list");
+        }
+
         Stream.Builder<Task> myStream=Stream.builder();
         this.forEach((Task t)-> myStream.add(t));
         return myStream.build();
         */
+        if(this.size()==0){
+            throw new RuntimeException("There are not elements in this list");
+        }
 
         Spliterator<Task> taskSpliterator= Spliterators.
                 spliteratorUnknownSize(this.iterator(),0);

@@ -1,5 +1,6 @@
 package mx.tc.j2se.tasks;
 
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class ArrayTaskListImpl extends AbstractTaskList{
@@ -88,6 +89,30 @@ public class ArrayTaskListImpl extends AbstractTaskList{
         }
         return null;
     }
+    @Override
+    public Iterator<Task> iterator() {
+        return new Iterator<Task>() {
+            int position=0;
+            @Override
+            public boolean hasNext() {
+                if(position<size()){
+                    return true;
+                }
+                //position=0;
+                return false;
+
+            }
+            @Override
+            public Task next() {
+                if(hasNext()){
+                    return getTask(position++);
+                }
+                else {
+                    throw new ArrayIndexOutOfBoundsException("There isn't a new element in this list");
+                }
+            }
+        };
+    }
 
     @Override
     public boolean equals(Object otherObject) {
@@ -123,9 +148,13 @@ public class ArrayTaskListImpl extends AbstractTaskList{
         return "ArrayTaskListImpl"+super.toString();
     }
     @Override
-    protected ArrayTaskListImpl clone() throws CloneNotSupportedException {
-
-        return (ArrayTaskListImpl) super.clone();
+    public ArrayTaskListImpl clone()  {
+        try {
+            return (ArrayTaskListImpl) super.clone();
+        }catch (CloneNotSupportedException e){
+            System.err.println(e.getMessage()+"\n"+e.getStackTrace());
+            return null;
+        }
     }
 
     @Override

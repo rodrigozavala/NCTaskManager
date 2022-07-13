@@ -217,6 +217,7 @@ class LinkedTaskListImplTest {
         t1.setActive(true);
         t2.setActive(true);
         t4.setActive(true);
+        LinkedTaskListImpl myList2=new LinkedTaskListImpl();
 
         myList.add(t1);
         myList.add(t2);
@@ -225,6 +226,16 @@ class LinkedTaskListImplTest {
         myList.add(t1);
         myList.getStream().forEach(t->System.out.println(t.toString()));
         myList.getStream().forEach(t->System.out.println(t.toString()+"Hola:D"));
+        System.out.println("Hi");
+        try{
+            myList2.getStream().forEach(System.out::println);
+            myList2.getStream().forEach(t->System.out.println(t.toString()));
+        }catch(RuntimeException e){
+            System.err.println(e.getMessage()+"\n"+e.getStackTrace());
+        }
+        System.out.println("Hi");
+        System.out.println("Hi");
+
 
     }
 

@@ -1,8 +1,7 @@
 package mx.tc.j2se.tasks;
 
 import java.util.Iterator;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
 import java.util.stream.Stream;
 
 public class LinkedTaskListImpl extends AbstractTaskList {
@@ -129,24 +128,27 @@ public class LinkedTaskListImpl extends AbstractTaskList {
                     currentLink=currentLink.next;
                     return t;
 
+                }else {
+                    throw new ArrayIndexOutOfBoundsException("There isn't a new element in this list");
+
                 }
 
-                return null;
+
             }
         };
 
     }
 
     @Override
-    public boolean equals(Object otherObject) {
-        if(this == otherObject){
+    public boolean equals(Object o) {
+        if(this == o){
             return true;
         }
-        if(otherObject==null || getClass()!=otherObject.getClass()){
+        if(o==null || getClass()!=o.getClass()){
             return false;
         }
 
-        LinkedTaskListImpl A=(LinkedTaskListImpl) otherObject;
+        LinkedTaskListImpl A=(LinkedTaskListImpl) o;
 
         if(A.size()!=this.size()){
             return false;
@@ -168,6 +170,26 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     public int hashCode() {
         int sum=this.getClass().toString().length()+this.size()^3;
         return super.hashCode()+sum;
+
+        /*
+        int sum=0;
+        int active=0;
+        int res=0;
+        for (int i=0;i<this.size();i++){
+            sum+=this.getTask(i).hashCode();
+            if(this.getTask(i).isActive()){
+                active++;
+            }
+            if(this.getTask(i).getStartTime()%2==0){
+                res=res*5+this.getTask(i).getStartTime()/2;
+            }
+        }
+        int sum2=this.getClass().toString().length()+this.size()^3;
+
+
+        return (int)(sum2+(sum-res)^2+this.size()+(active)*this.size());
+         */
+
     }
 
     @Override
@@ -176,8 +198,14 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     }
 
     @Override
-    protected LinkedTaskListImpl clone() throws CloneNotSupportedException {
-        return (LinkedTaskListImpl) super.clone();
+    public LinkedTaskListImpl clone() {
+        try{
+            return (LinkedTaskListImpl) super.clone();
+
+        }catch(CloneNotSupportedException e){
+            System.err.println(e.getMessage()+"\n"+e.getStackTrace());
+            return null;
+        }
     }
 
     private class link{
