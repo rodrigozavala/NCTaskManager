@@ -78,10 +78,6 @@ public class LinkedTaskListImpl extends AbstractTaskList {
             return false;
         }
 
-        //Predicate<TaskImpl> myFilter1=t->((TaskImpl)task).equals(t);
-
-        //this.getStream().filter(t->myFilter1.negate().test((TaskImpl) t))
-          //      .toArray();
     }
 
     @Override
@@ -170,26 +166,6 @@ public class LinkedTaskListImpl extends AbstractTaskList {
     public int hashCode() {
         int sum=this.getClass().toString().length()+this.size()^3;
         return super.hashCode()+sum;
-
-        /*
-        int sum=0;
-        int active=0;
-        int res=0;
-        for (int i=0;i<this.size();i++){
-            sum+=this.getTask(i).hashCode();
-            if(this.getTask(i).isActive()){
-                active++;
-            }
-            if(this.getTask(i).getStartTime()%2==0){
-                res=res*5+this.getTask(i).getStartTime()/2;
-            }
-        }
-        int sum2=this.getClass().toString().length()+this.size()^3;
-
-
-        return (int)(sum2+(sum-res)^2+this.size()+(active)*this.size());
-         */
-
     }
 
     @Override

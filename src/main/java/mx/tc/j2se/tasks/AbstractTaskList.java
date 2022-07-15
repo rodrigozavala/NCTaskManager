@@ -57,31 +57,6 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
 
         AbstractTaskList myList;
         myList=(this.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
-        /*
-        if(this.getClass().equals(ArrayTaskListImpl.class)){
-            myList=new ArrayTaskListImpl();
-        }else if(this.getClass().equals(LinkedTaskListImpl.class)){
-            myList=new LinkedTaskListImpl();
-        }*/
-
-        /*
-        for(int i=0;i<this.size();i++){
-            if(this.getTask(i).nextTimeAfter(from)!=-1){
-                if (this.getTask(i).nextTimeAfter(from)<to && this.getTask(i).nextTimeAfter(from)>from){
-                    myList.add(this.getTask(i));
-                }
-            }
-        }*/
-/*
-        for(Task t : this){
-            if(t.nextTimeAfter(from)!=-1){
-                if (t.nextTimeAfter(from)<to && t.nextTimeAfter(from)>from){
-                    myList.add(t);
-                }
-            }
-        }
-
- */
 
         Consumer<TaskImpl> taskConsumer= myList::add;
         this.getStream()
@@ -95,7 +70,7 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
 
     /**
      *
-     * @return An Iterator for arrays
+     * @return an Iterator for linked list or arrays, it's optimized in each implementation
      */
     @Override
     public Iterator<Task> iterator() {
@@ -140,6 +115,12 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
     }
 
 
+    /**
+     * Compare this list with other that is passed as an argument
+     * @param otherObject is the object to be compared
+     * @return true if the passed object is equals to this one,
+     * false otherwise
+     */
     public boolean equals(Object otherObject) {
         if(this == otherObject){
             return true;
@@ -165,9 +146,23 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
 
     }
 
+    /**
+     * A code to identify this list
+     * @return An int related to the qualities of this list
+     */
     @Override
     public int hashCode() {
-        //return super.hashCode();
+
+
+        int fTasks=12;
+        if(this.size()>=1){
+            int myLimit=(this.size()>=2)?this.size()-1:this.size();
+            fTasks= (int)this.getStream().
+                    limit((long)myLimit).
+                    map(t->t.getTitle().length())
+                    .reduce(0,(Integer a,Integer b)->a*2+b-50);
+        }
+
         int sum=(int)this.getStream().
                 map(t->(t.hashCode())).
                 reduce(0,Integer::sum);
@@ -176,10 +171,14 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
                 filter(t->t.getStartTime()%2==0).
                 map(t->t.getStartTime()).
                 reduce(0,(a,b)->{return (a*5)+b/2;});
-        return (int)((sum-res)^2+this.size()+(int)(this.getStream().filter(t->t.isActive()).count())*this.size());
+        return (int)(-fTasks+(2*sum-res)^2+this.size()+(int)(this.getStream().filter(t->t.isActive()).count())*this.size());
     }
 
 
+    /**
+     *
+     * @return A string with significant information about this list
+     */
     @Override
     public String toString() {
         String cad="{";
@@ -193,6 +192,11 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
         return cad+"}";
     }
 
+    /**
+     *
+     * @return a copy of the object being cloned
+     * @throws CloneNotSupportedException
+     */
     public AbstractTaskList clone() throws CloneNotSupportedException {
         try{
             return (AbstractTaskList) super.clone();
@@ -202,18 +206,13 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
         }
     }
 
-
+    /**
+     *
+     * @return a stream with the elements of the list, if a list doesn't have any
+     * task, then it throws a RuntimeException
+     */
     public Stream<Task> getStream(){
 
-        /*
-        if(this.size()==0){
-            throw new RuntimeException("There are not elements in this list");
-        }
-
-        Stream.Builder<Task> myStream=Stream.builder();
-        this.forEach((Task t)-> myStream.add(t));
-        return myStream.build();
-        */
         if(this.size()==0){
             throw new RuntimeException("There are not elements in this list");
         }

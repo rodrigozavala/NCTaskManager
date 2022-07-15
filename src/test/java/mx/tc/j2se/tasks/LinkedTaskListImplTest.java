@@ -286,6 +286,7 @@ class LinkedTaskListImplTest {
             assertTrue(otherList.equals(myTaskList4));
             assertTrue(!otherList.equals(myTaskList));
             System.out.println("x)"+myTaskList4.toString()+"\n y)"+otherList.toString());
+            System.out.println("A hash code:"+myTaskList2.hashCode());
             System.out.println("It worked");
         }catch (CloneNotSupportedException e){
             System.out.println("Didn't work");
