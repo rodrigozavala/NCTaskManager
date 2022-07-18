@@ -2,6 +2,12 @@ package mx.tc.j2se.tasks;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArrayTaskListImplTest {
@@ -9,10 +15,22 @@ class ArrayTaskListImplTest {
     @Test
     void incoming() {
         ArrayTaskListImpl myTaskList= new ArrayTaskListImpl();
-        TaskImpl t1=new TaskImpl("Running for my life",60,100,2);
-        TaskImpl t2=new TaskImpl("Working",45,70,5);
-        TaskImpl t3= new TaskImpl("Eating candy",36,54,6);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",106,154,6);
+        LocalDateTime s1=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e1=LocalDateTime.of(2019, Month.SEPTEMBER, 28, 14, 33);
+        LocalDateTime s2=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e2=LocalDateTime.of(2019, Month.JULY, 1, 14, 33);
+        LocalDateTime s3=LocalDateTime.of(2019, Month.AUGUST, 28, 14, 33);
+        LocalDateTime e3=LocalDateTime.of(2019, Month.SEPTEMBER, 8, 14, 33);
+        LocalDateTime s4=LocalDateTime.of(2020, Month.JANUARY, 28, 14, 33);
+        LocalDateTime e4=LocalDateTime.of(2020, Month.MARCH, 28, 14, 33);
+        Duration int1= Duration.of(10, ChronoUnit.HOURS);
+        Duration int2= Duration.of(12, ChronoUnit.HOURS);
+        Duration int3= Duration.of(8, ChronoUnit.HOURS);
+        Duration int4= Duration.of(5, ChronoUnit.HOURS);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
         t1.setActive(true);
         t2.setActive(true);
         t4.setActive(true);
@@ -21,15 +39,15 @@ class ArrayTaskListImplTest {
         myTaskList.add(t2);
         myTaskList.add(t3);
         myTaskList.add(t4);
-        ArrayTaskListImpl subList= (ArrayTaskListImpl) myTaskList.incoming(30,75);
-        subList= (ArrayTaskListImpl) myTaskList.incoming(30,75);
-        subList= (ArrayTaskListImpl) myTaskList.incoming(30,75);
+
+        ArrayTaskListImpl subList= (ArrayTaskListImpl) Tasks.incoming(myTaskList,e2,e1); /*myTaskList.incoming(30,75)*/;
+
         System.out.println("1) The content of the sublist: "+subList.size());
         for (int i=0;i< subList.size();i++){
             System.out.println(subList.getTask(i).toString());
             //System.out.println(subList.getTask(i).getEndTime());
         }
-        ArrayTaskListImpl subList3= (ArrayTaskListImpl) myTaskList.incoming(3,150);
+        ArrayTaskListImpl subList3= (ArrayTaskListImpl)Tasks.incoming(myTaskList,e2,e4); //myTaskList.incoming(3,150);
         System.out.println("2) The content of the new sublist: "+subList3.size());
         for (int i=0;i< subList3.size();i++){
             System.out.println(subList3.getTask(i).toString());
@@ -44,9 +62,21 @@ class ArrayTaskListImplTest {
     @Test
     void add() {
         ArrayTaskListImpl myTaskList= new ArrayTaskListImpl();
-        TaskImpl t1=new TaskImpl("Running for my life",10,100,2);
-        TaskImpl t2=new TaskImpl("Working",15,50,5);
-        TaskImpl t3= new TaskImpl("Eating candy",6,54,6);
+        LocalDateTime s1=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e1=LocalDateTime.of(2019, Month.SEPTEMBER, 28, 14, 33);
+        LocalDateTime s2=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e2=LocalDateTime.of(2019, Month.JULY, 1, 14, 33);
+        LocalDateTime s3=LocalDateTime.of(2019, Month.AUGUST, 28, 14, 33);
+        LocalDateTime e3=LocalDateTime.of(2019, Month.SEPTEMBER, 8, 14, 33);
+
+        Duration int1= Duration.of(10, ChronoUnit.HOURS);
+        Duration int2= Duration.of(12, ChronoUnit.HOURS);
+        Duration int3= Duration.of(8, ChronoUnit.HOURS);
+
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
+
         t1.setActive(true);
         t2.setActive(true);
         myTaskList.add(t1);
@@ -63,11 +93,23 @@ class ArrayTaskListImplTest {
     @Test
     void remove() {
         ArrayTaskListImpl myTaskList= new ArrayTaskListImpl();
-        TaskImpl t1=new TaskImpl("Running for my life",10,100,2);
-        TaskImpl t2=new TaskImpl("Working",15,50,5);
-        TaskImpl t3= new TaskImpl("Eating candy",6,54,6);
-        TaskImpl t4=new TaskImpl("Working",15,50,5);
-        TaskImpl t5=new TaskImpl("Working harder",15,50,5);
+        LocalDateTime s1=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e1=LocalDateTime.of(2019, Month.SEPTEMBER, 28, 14, 33);
+        LocalDateTime s2=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e2=LocalDateTime.of(2019, Month.JULY, 1, 14, 33);
+        LocalDateTime s3=LocalDateTime.of(2019, Month.AUGUST, 28, 14, 33);
+        LocalDateTime e3=LocalDateTime.of(2019, Month.SEPTEMBER, 8, 14, 33);
+        LocalDateTime s4=LocalDateTime.of(2020, Month.JANUARY, 28, 14, 33);
+        LocalDateTime e4=LocalDateTime.of(2020, Month.MARCH, 28, 14, 33);
+        Duration int1= Duration.of(10, ChronoUnit.HOURS);
+        Duration int2= Duration.of(12, ChronoUnit.HOURS);
+        Duration int3= Duration.of(8, ChronoUnit.HOURS);
+        Duration int4= Duration.of(5, ChronoUnit.HOURS);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+        TaskImpl t5=new TaskImpl("Working harder",s4,e4,int4);
         TaskImpl t6=null;
         myTaskList.add(t1);
         myTaskList.add(t2);

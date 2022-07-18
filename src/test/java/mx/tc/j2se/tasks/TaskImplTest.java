@@ -2,6 +2,11 @@ package mx.tc.j2se.tasks;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskImplTest {
@@ -15,9 +20,12 @@ class TaskImplTest {
 
     @Test
     void getTime() {
-
-        TaskImpl myTask=new TaskImpl("Running",10,100,5);
-        TaskImpl myTask2=new TaskImpl("Working",20);
+        LocalDateTime s1=LocalDateTime.of(2020,Month.JULY,15,19,0);
+        LocalDateTime e1=LocalDateTime.of(2020,Month.DECEMBER,12,8,30);
+        LocalDateTime time1=LocalDateTime.of(2020,Month.SEPTEMBER,12,11,40);
+        Duration dur=Duration.of(20,ChronoUnit.HOURS);
+        TaskImpl myTask=new TaskImpl("Running",s1,e1,dur);
+        TaskImpl myTask2=new TaskImpl("Working",time1);
         assertTrue (false==myTask.isActive());
         assertTrue (false==myTask2.isActive());
         assertTrue (true==myTask.isRepeated());
@@ -53,12 +61,25 @@ class TaskImplTest {
 
     @Test
     void testHashCode() {
-        TaskImpl t1=new TaskImpl("Running for my life",60,100,2);
-        TaskImpl t2=new TaskImpl("Working",45,70,5);
-        TaskImpl t3= new TaskImpl("Eating candy",36,54,6);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",106,154,6);
-        TaskImpl t= new TaskImpl("Running in the 90's",100,150,5);
-        TaskImpl ty= new TaskImpl("Running in the 90's",100,150,5);
+        LocalDateTime s1=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e1=LocalDateTime.of(2019, Month.SEPTEMBER, 28, 14, 33);
+        LocalDateTime s2=LocalDateTime.of(2019, Month.MARCH, 28, 14, 33);
+        LocalDateTime e2=LocalDateTime.of(2019, Month.JULY, 1, 14, 33);
+        LocalDateTime s3=LocalDateTime.of(2019, Month.AUGUST, 28, 14, 33);
+        LocalDateTime e3=LocalDateTime.of(2019, Month.SEPTEMBER, 8, 14, 33);
+        LocalDateTime s4=LocalDateTime.of(2020, Month.JANUARY, 28, 14, 33);
+        LocalDateTime e4=LocalDateTime.of(2020, Month.MARCH, 28, 14, 33);
+        Duration int1= Duration.of(10, ChronoUnit.HOURS);
+        Duration int2= Duration.of(12, ChronoUnit.HOURS);
+        Duration int3= Duration.of(8, ChronoUnit.HOURS);
+        Duration int4= Duration.of(5, ChronoUnit.HOURS);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+
+        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,int2);
+        TaskImpl ty= new TaskImpl("Running in the 90's",e3,e1,int2);
         try{
             TaskImpl tx= t.clone();
             int myhash=tx.hashCode();

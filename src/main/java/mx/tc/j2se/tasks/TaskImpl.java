@@ -1,7 +1,13 @@
 package mx.tc.j2se.tasks;
 
-import java.util.Objects;
+//import jdk.vm.ci.meta.Local;
 
+import java.time.Duration;
+import java.time.Month;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
+import java.util.Objects;
+import java.time.LocalDateTime;
 /**
  * TaskImp1 class implements the Task Interface
  * @author Rodrigo Zavala
@@ -13,12 +19,12 @@ public class TaskImpl implements Task,Cloneable{
 
     private boolean repeated;
     /** Current time*/
-    private int time;
-    private int interval;
+    private LocalDateTime time;
+    private Duration interval;
     /** Time at which the task began*/
-    private int start;
+    private LocalDateTime start;
     /** Time at which the task will end*/
-    private int end;
+    private LocalDateTime end;
 
     /**
      * Empty constructor, it doesn't set any property
@@ -31,10 +37,12 @@ public class TaskImpl implements Task,Cloneable{
      * @param title: task's title
      * @param time: current time
      */
-    public TaskImpl(String title, int time){
-        if(time<0){
+    public TaskImpl(String title, LocalDateTime time){
+        /*if(time<0){
             throw new IllegalArgumentException("time must be positive or zero");
         }
+
+         */
         setTitle(title);
         setTime(time);
         setActive(false);
@@ -49,42 +57,61 @@ public class TaskImpl implements Task,Cloneable{
      * @param end: end time of the task
      * @param interval: time interval that specifies how often the task will be repeated
      */
-    public TaskImpl(String title, int start, int end, int interval){
-        if(start<0 || end<0){
-            throw new IllegalArgumentException("Time must be positive or zero");
-        } else if (start>=end) {
-            throw new IllegalArgumentException("start must be less than end time-mark");
+    public TaskImpl(String title, LocalDateTime start, LocalDateTime end, Duration interval){
+        if(start==null || end==null/*start<0 || end<0*/){
+            throw new IllegalArgumentException("Time must be non-null");
+        } else if (start.isAfter(end)|| start.isEqual(end)) {
+            throw new IllegalArgumentException("start must be before end time-mark");
 
-        } else if (interval<=0) {
+        } else if (/*interval<=0*/ interval==null) {
             throw new IllegalArgumentException("interval must be positive");
         }
+
         setTitle(title);
         setTime(start,end,interval);
         setActive(false);
     }
 
     @Override
-    public int nextTimeAfter(int current) {
-        if (current<0){
+    public LocalDateTime nextTimeAfter(LocalDateTime current) {
+        if (/*current<0*/current==null){
             throw new IllegalArgumentException("time must be positive or zero");
+
         }
+
         if(isActive()==false){//Task isn't active
-            return -1;
+            //Date d=new Date();
+            //d.setTime(-1000);
+            LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
+            return ldt;
+            //return -1;
         } else if (isRepeated()==false) {//task is active and non-repetitive
-            if((getEndTime()-current)<=0){//task has ended
-                return -1;
+            if(/*(getEndTime()-current)<=0*/ getEndTime().isBefore(current) || getEndTime().isEqual(current)){//task has ended
+                LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
+                return ldt;
+                //return null;
+                //return -1;
             } else {//task can be completed
                 return getTime();
             }
         } else{//task is active and repetitive
-            if (getEndTime()-current>0){ //task can be completed
-                for (int i=getStartTime();i<=getEndTime();i+=this.interval){
+            if (/*getEndTime()-current>0*/ getEndTime().isAfter(current)){ //task can be completed
+                /*for (int i=getStartTime();i<=getEndTime();i+=this.interval){
                     if (i-current>0){
                         return i;
                     }
+                }*/
+                for(LocalDateTime i=getStartTime();i.isBefore(getEndTime())|| i.isEqual(getEndTime());i=i.plus(this.interval)){
+                    if(i.isAfter(current)){
+                        return i;
+                    }
+
                 }
             }
-            return -1;
+            //return -1;
+            LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
+            return ldt;
+            //return null;
 
         }
 
@@ -113,7 +140,7 @@ public class TaskImpl implements Task,Cloneable{
 
 
     @Override
-    public int getTime() {
+    public LocalDateTime getTime() {
         if (isRepeated()){
             return this.start;
         }
@@ -124,17 +151,18 @@ public class TaskImpl implements Task,Cloneable{
 
 
     @Override
-    public void setTime(int time) {
-        if (time<0){
+    public void setTime(LocalDateTime time) {
+        if (/*time<0*/time==null){
             throw new IllegalArgumentException("time must be positive or zero");
         }
         if(isRepeated()){
             this.repeated=false;
         }
-        this.time=time;}
+        this.time=time.plusHours(0);
+    }
 
     @Override
-    public int getStartTime() {
+    public LocalDateTime getStartTime() {
         if (isRepeated()==false){
             return this.time;
         }
@@ -142,7 +170,7 @@ public class TaskImpl implements Task,Cloneable{
     }
 
     @Override
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         if(isRepeated()==false){
             return this.time;
         }
@@ -150,29 +178,29 @@ public class TaskImpl implements Task,Cloneable{
     }
 
     @Override
-    public int getRepeatInterval() {
+    public Duration getRepeatInterval() {
         if (isRepeated()==false){
-            return 0;
+            return null;
         }
         return this.interval;
     }
 
     @Override
-    public void setTime(int start, int end, int interval) {
-        if(start<0 || end<0){
+    public void setTime(LocalDateTime start, LocalDateTime end, Duration interval) {
+        if(start==null || end ==null/*start<0 || end<0*/){
             throw new IllegalArgumentException("Time must be positive or zero");
-        } else if (start>=end) {
-            throw new IllegalArgumentException("start must be minor than end time-mark");
+        } else if (start.isAfter(end)|| start.isEqual(end)) {
+            throw new IllegalArgumentException("start must be before end time-mark");
 
-        } else if (interval<=0) {
+        } else if (interval==null/*interval<=0*/) {
             throw new IllegalArgumentException("interval must be positive");
         }
         if(isRepeated()==false){
             this.repeated=true;
         }
-        this.interval=interval;
-        this.start=start;
-        this.end=end;
+        this.interval=interval.plusHours(0);
+        this.start=start.plusHours(0);
+        this.end=end.plusHours(0);
     }
 
     @Override
@@ -191,11 +219,11 @@ public class TaskImpl implements Task,Cloneable{
 
         TaskImpl t= (TaskImpl)o;
         boolean var1=this.getTitle().equals(t.getTitle())&& this.isActive()==t.isActive();
-        boolean var2= this.isRepeated()==t.isRepeated() && this.getEndTime()==t.getEndTime();
-        boolean var3= this.getTime()==t.getTime() && this.getStartTime()==t.getStartTime();
-        boolean var4= this.getRepeatInterval()==t.getRepeatInterval();
+        boolean var2= this.isRepeated()==t.isRepeated() && this.getEndTime().isEqual(t.getEndTime());
+        boolean var3= this.getTime().isEqual(t.getTime()) && this.getStartTime().isEqual(t.getStartTime());
+        //Check this instruction of interval:
+        boolean var4= this.getRepeatInterval().equals(t.getRepeatInterval());
         return  var1 && var2 && var3 && var4;
-
     }
 
     @Override

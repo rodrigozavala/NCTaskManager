@@ -1,5 +1,8 @@
 package mx.tc.j2se.tasks;
 
+//import jdk.vm.ci.meta.Local;
+
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -39,33 +42,6 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
      */
     public abstract Task getTask(int index);
 
-    /**
-     * To get the tasks between two time marks, since it's final it cannot be
-     * overridden in child classes
-     * @param from the initial time of the interval
-     * @param to the ending time of the interval
-     * @return a subset of tasks that are scheduled for execution
-     * at least once after the "from" time, and not later than the
-     * "to" time.
-     */
-    public final AbstractTaskList incoming(int from, int to){
-        if (from<0 || to<0){
-            throw new IllegalArgumentException("Time marks cannot be negative");
-        } else if (to<=from) {
-            throw new IllegalArgumentException("'To' time mark cannot be minor or equal to 'from' time mark");
-        }
-
-        AbstractTaskList myList;
-        myList=(this.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
-
-        Consumer<TaskImpl> taskConsumer= myList::add;
-        this.getStream()
-                .filter(t->{
-                    return (t.nextTimeAfter(from)<to && t.nextTimeAfter(from)>from);}
-                ).forEach(t->{taskConsumer.accept((TaskImpl) t);});
-
-        return myList;
-    }
 
 
     /**
@@ -168,8 +144,8 @@ public abstract class AbstractTaskList implements Iterable<Task>,Cloneable{
                 reduce(0,Integer::sum);
 
         int res=(int)this.getStream().
-                filter(t->t.getStartTime()%2==0).
-                map(t->t.getStartTime()).
+                filter(t->t.getStartTime().toString().length()%2==0).
+                map(t->t.getStartTime().toString().length()).
                 reduce(0,(a,b)->{return (a*5)+b/2;});
         return (int)(-fTasks+(2*sum-res)^2+this.size()+(int)(this.getStream().filter(t->t.isActive()).count())*this.size());
     }
