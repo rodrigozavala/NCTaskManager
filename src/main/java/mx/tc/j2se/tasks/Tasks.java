@@ -1,10 +1,9 @@
 package mx.tc.j2se.tasks;
-//import jdk.vm.ci.meta.Local;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class Tasks {
     /**
@@ -24,14 +23,14 @@ public class Tasks {
         }
 
         Iterable<Task> myList;
-        myList=(tasks.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
+        //myList=(tasks.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
+        myList=new LinkedList<Task>();
+        Consumer<Task> taskConsumer= ((LinkedList<Task>/*AbstractTaskList*/)myList)::add;
 
-        Consumer<TaskImpl> taskConsumer= ((AbstractTaskList)myList)::add;
-
-        ((AbstractTaskList)tasks).getStream()
+        ((/*AbstractTaskList*/LinkedList<Task>)tasks).stream()
                 .filter(t->{
                     return (t.nextTimeAfter(start).isBefore(end) && t.nextTimeAfter(start).isAfter(start));}
-                ).forEach(t->{taskConsumer.accept((TaskImpl) t);});
+                ).forEach(t->{taskConsumer.accept((Task) t);});
 
         return myList;
     }
@@ -41,10 +40,12 @@ public class Tasks {
         Comparator<LocalDateTime> comparator=(ldt0,ldt1)->{return ldt0.compareTo(ldt1);};
         Comparator<Task> compareTask=(t1,t2)->{return t1.getTime().compareTo(t2.getTime());};
         SortedMap<LocalDateTime, Set<Task>> map= new TreeMap<LocalDateTime, Set<Task>>(comparator);
-        LinkedTaskListImpl list=(LinkedTaskListImpl)incoming(tasks,start,end);//Has repetitive tasks
+        //LinkedTaskListImpl list=(LinkedTaskListImpl)incoming(tasks,start,end);//Has repetitive tasks
+        LinkedList<Task> list=(LinkedList<Task>)incoming(tasks,start,end);
         for(Task t:list){
             if(t.isRepeated()){//if t is repetitive, then maybe it has a lot of repetitions in the same period
-                for(LocalDateTime i=t.nextTimeAfter(start);i.isBefore(end) || i.isEqual(end);i=i.plus(t.getRepeatInterval())){
+                //Duration dur0=Duration.between(t.getStartTime(),t.getEndTime()).dividedBy(t.getRepeatInterval());
+                for(LocalDateTime i=t.nextTimeAfter(start);i.isBefore(end) || i.isEqual(end);i=i.plus(t.getRepeatInterval(), ChronoUnit.HOURS)){
                     if(map.keySet().contains(i)){
 
                         for (Map.Entry<LocalDateTime,Set<Task>>entry:map.entrySet()){
@@ -61,14 +62,11 @@ public class Tasks {
                 }
             }else{//t is non-repetitive
                 if(map.keySet().contains(t.getTime())){//map does contain the task's date
-
                     for (Map.Entry<LocalDateTime,Set<Task>>entry:map.entrySet()){
                         if(entry.getKey().isEqual(t.getTime())){
-
                             (entry).getValue().add(t);
                         }
                     }
-
                 }else{//map does not contain the task's date
 
                     Set<Task> set=new TreeSet<Task>(compareTask);

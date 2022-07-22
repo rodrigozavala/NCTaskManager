@@ -1,8 +1,8 @@
 package mx.tc.j2se.tasks;
 
-import java.time.Duration;
+
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
+
 
 public interface Task {
 
@@ -59,7 +59,7 @@ public interface Task {
      * @return interval if the task is a repeated one,
      * otherwise it returns 0
      */
-    Duration getRepeatInterval();
+    long getRepeatInterval();
 
     /**
      * Setter method to set time, start and end
@@ -67,7 +67,7 @@ public interface Task {
      * @param end: the time mark at which the task will end
      * @param interval: how often the task will be repeated in time
      */
-    void setTime(LocalDateTime start, LocalDateTime end, Duration interval);
+    void setTime(LocalDateTime start, LocalDateTime end, long interval);
 
     /**
      * Getter method to get repeated, to know if the task is a repetitive one

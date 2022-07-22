@@ -32,8 +32,8 @@ class TasksTest {
 
         LocalDateTime d2=LocalDateTime.of(2022, Month.SEPTEMBER,1,18,00);
         Task t1=new TaskImpl("Lunch with a beautiful girl",d1);
-        Task t2=new TaskImpl("Morning run",s1,e1,dur1);
-        Task t3=new TaskImpl("Taking medication",s2,e2,dur2);
+        Task t2=new TaskImpl("Morning run",s1,e1,300/*dur1*/);
+        Task t3=new TaskImpl("Taking medication",s2,e2,200/*dur2*/);
         Task t4=new TaskImpl("Meeting with friends",d2);
         t1.setActive(true);
         t2.setActive(true);

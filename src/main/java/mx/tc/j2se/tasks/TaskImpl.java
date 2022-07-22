@@ -1,11 +1,5 @@
 package mx.tc.j2se.tasks;
-
-//import jdk.vm.ci.meta.Local;
-
-import java.time.Duration;
-import java.time.Month;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.time.LocalDateTime;
 /**
@@ -20,7 +14,7 @@ public class TaskImpl implements Task,Cloneable{
     private boolean repeated;
     /** Current time*/
     private LocalDateTime time;
-    private Duration interval;
+    private long interval;
     /** Time at which the task began*/
     private LocalDateTime start;
     /** Time at which the task will end*/
@@ -57,13 +51,13 @@ public class TaskImpl implements Task,Cloneable{
      * @param end: end time of the task
      * @param interval: time interval that specifies how often the task will be repeated
      */
-    public TaskImpl(String title, LocalDateTime start, LocalDateTime end, Duration interval){
+    public TaskImpl(String title, LocalDateTime start, LocalDateTime end, long interval){
         if(start==null || end==null/*start<0 || end<0*/){
             throw new IllegalArgumentException("Time must be non-null");
         } else if (start.isAfter(end)|| start.isEqual(end)) {
             throw new IllegalArgumentException("start must be before end time-mark");
 
-        } else if (/*interval<=0*/ interval==null) {
+        } else if (interval<=0) {
             throw new IllegalArgumentException("interval must be positive");
         }
 
@@ -75,47 +69,46 @@ public class TaskImpl implements Task,Cloneable{
     @Override
     public LocalDateTime nextTimeAfter(LocalDateTime current) {
         if (/*current<0*/current==null){
-            throw new IllegalArgumentException("time must be positive or zero");
+            throw new IllegalArgumentException("time must be non-null");
 
+        }
+        if (current.isBefore(LocalDateTime.MIN)){
+            throw new IllegalArgumentException("time mustn't be before"+LocalDateTime.MIN);
+        }
+        if (current.isAfter(LocalDateTime.MAX)){
+            throw new IllegalArgumentException("time must be before"+LocalDateTime.MAX);
         }
 
         if(isActive()==false){//Task isn't active
-            //Date d=new Date();
-            //d.setTime(-1000);
-            LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
+            LocalDateTime ldt=LocalDateTime.MIN;
             return ldt;
-            //return -1;
         } else if (isRepeated()==false) {//task is active and non-repetitive
             if(/*(getEndTime()-current)<=0*/ getEndTime().isBefore(current) || getEndTime().isEqual(current)){//task has ended
-                LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
+                LocalDateTime ldt=LocalDateTime.MIN;
                 return ldt;
-                //return null;
-                //return -1;
             } else {//task can be completed
                 return getTime();
             }
         } else{//task is active and repetitive
             if (/*getEndTime()-current>0*/ getEndTime().isAfter(current)){ //task can be completed
-                /*for (int i=getStartTime();i<=getEndTime();i+=this.interval){
-                    if (i-current>0){
-                        return i;
-                    }
-                }*/
-                for(LocalDateTime i=getStartTime();i.isBefore(getEndTime())|| i.isEqual(getEndTime());i=i.plus(this.interval)){
+                for(LocalDateTime i=getStartTime();i.isBefore(getEndTime())|| i.isEqual(getEndTime());i=i.plus(this.interval, ChronoUnit.HOURS)){
                     if(i.isAfter(current)){
                         return i;
                     }
 
                 }
             }
-            //return -1;
-            LocalDateTime ldt=LocalDateTime.of(0000, Month.JANUARY,1,0,0,0);
-            return ldt;
-            //return null;
+
+            return LocalDateTime.MIN;
 
         }
 
     }
+
+
+
+
+
 
     @Override
     public String getTitle() {
@@ -152,8 +145,8 @@ public class TaskImpl implements Task,Cloneable{
 
     @Override
     public void setTime(LocalDateTime time) {
-        if (/*time<0*/time==null){
-            throw new IllegalArgumentException("time must be positive or zero");
+        if (time==null){
+            throw new IllegalArgumentException("time must be non-null");
         }
         if(isRepeated()){
             this.repeated=false;
@@ -178,27 +171,27 @@ public class TaskImpl implements Task,Cloneable{
     }
 
     @Override
-    public Duration getRepeatInterval() {
+    public long getRepeatInterval() {
         if (isRepeated()==false){
-            return null;
+            return 0;
         }
         return this.interval;
     }
 
     @Override
-    public void setTime(LocalDateTime start, LocalDateTime end, Duration interval) {
+    public void setTime(LocalDateTime start, LocalDateTime end, long interval) {
         if(start==null || end ==null/*start<0 || end<0*/){
             throw new IllegalArgumentException("Time must be positive or zero");
         } else if (start.isAfter(end)|| start.isEqual(end)) {
             throw new IllegalArgumentException("start must be before end time-mark");
 
-        } else if (interval==null/*interval<=0*/) {
+        } else if (interval<=0) {
             throw new IllegalArgumentException("interval must be positive");
         }
         if(isRepeated()==false){
             this.repeated=true;
         }
-        this.interval=interval.plusHours(0);
+        this.interval=interval;//.plusHours(0);
         this.start=start.plusHours(0);
         this.end=end.plusHours(0);
     }
@@ -222,7 +215,7 @@ public class TaskImpl implements Task,Cloneable{
         boolean var2= this.isRepeated()==t.isRepeated() && this.getEndTime().isEqual(t.getEndTime());
         boolean var3= this.getTime().isEqual(t.getTime()) && this.getStartTime().isEqual(t.getStartTime());
         //Check this instruction of interval:
-        boolean var4= this.getRepeatInterval().equals(t.getRepeatInterval());
+        boolean var4= this.getRepeatInterval()==t.getRepeatInterval();
         return  var1 && var2 && var3 && var4;
     }
 

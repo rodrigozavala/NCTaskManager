@@ -1,7 +1,5 @@
 package mx.tc.j2se.tasks;
-
 import org.junit.jupiter.api.Test;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -26,9 +24,9 @@ class LinkedTaskListImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
 
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
 
         t1.setActive(true);
         t2.setActive(true);
@@ -64,13 +62,13 @@ class LinkedTaskListImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
         Duration int4= Duration.of(5, ChronoUnit.HOURS);
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
-        TaskImpl t5=new TaskImpl("Working harder",s4,e4,int4);
-        TaskImpl t6=new TaskImpl("Working harder and better",s4,e4,int4);
-        TaskImpl t7=new TaskImpl("Singing dark ancient songs",s4,e4,int4);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,5);
+        TaskImpl t5=new TaskImpl("Working harder",s4,e4,5);
+        TaskImpl t6=new TaskImpl("Working harder and better",s4,e4,5);
+        TaskImpl t7=new TaskImpl("Singing dark ancient songs",s4,e4,5);
         myTaskList.add(t1);
         myTaskList.add(t2);
         myTaskList.add(t2);
@@ -160,10 +158,10 @@ class LinkedTaskListImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
         Duration int4= Duration.of(5, ChronoUnit.HOURS);
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,5);
         t1.setActive(true);
         t2.setActive(true);
         t4.setActive(true);
@@ -193,7 +191,7 @@ class LinkedTaskListImplTest {
 
 
 
-        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,int2);
+        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,12);
         try{
             TaskImpl tx= t.clone();
             assertTrue(tx.equals(t));
@@ -264,10 +262,10 @@ class LinkedTaskListImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
         Duration int4= Duration.of(5, ChronoUnit.HOURS);
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,5);
         t1.setActive(true);
         t2.setActive(true);
         t4.setActive(true);
@@ -311,10 +309,10 @@ class LinkedTaskListImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
         Duration int4= Duration.of(5, ChronoUnit.HOURS);
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,5);
         t1.setActive(true);
         t2.setActive(true);
         t4.setActive(true);
@@ -343,7 +341,7 @@ class LinkedTaskListImplTest {
         myTaskList4.add(t2);
 
         //TaskImpl t= new TaskImpl("Running in the 90's",100,150,5);
-        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,int2);
+        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,12);
         try{
             TaskImpl tx= t.clone();
             assertTrue(tx.equals(t));
