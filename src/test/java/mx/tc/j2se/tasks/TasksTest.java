@@ -46,7 +46,7 @@ class TasksTest {
 
         LocalDateTime p1=LocalDateTime.of(2022,Month.AUGUST,25,8,0);
         LocalDateTime p2=LocalDateTime.of(2022,Month.AUGUST,26,8,0);
-        TreeMap<LocalDateTime, Set<Task>> cal= (TreeMap<LocalDateTime, Set<Task>>) Tasks.calendar(myList,p1,p2);
+        TreeMap<LocalDateTime, Set<Task>> cal= (TreeMap<LocalDateTime, Set<Task>>) Tasks.calendar(myList.iterator(),p1,p2);
         System.out.println("Hola");
         for(Map.Entry<LocalDateTime,Set<Task>>entry: cal.entrySet()){
             System.out.println(entry.toString());

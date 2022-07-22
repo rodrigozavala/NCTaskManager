@@ -3,9 +3,10 @@ package mx.tc.j2se.tasks;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class Tasks {
+
+
     /**
      * To get the tasks between two time marks, inside a task list
      * @param start the initial time of the interval
@@ -15,34 +16,47 @@ public class Tasks {
      * at least once after the "from" time, and not later than the
      * "to" time.
      */
-    public static Iterable<Task> incoming(Iterable<Task> tasks, LocalDateTime start, LocalDateTime end){
+    public static Iterator<Task> incoming(Iterator<Task> tasks, LocalDateTime start, LocalDateTime end){
+        /*while(mylistOuter.size()!=0){
+            mylistOuter.remove(mylistOuter.getTask(0));
+        }*/
         if (start==null || end==null){
             throw new IllegalArgumentException("Time marks cannot be null");
         } else if (end.isBefore(start)|| end.isEqual(start)) {
             throw new IllegalArgumentException("'To' time mark cannot be minor or equal to 'from' time mark");
         }
 
-        Iterable<Task> myList;
+        //Iterable<Task> myList;
         //myList=(tasks.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
-        myList=new LinkedList<Task>();
-        Consumer<Task> taskConsumer= ((LinkedList<Task>/*AbstractTaskList*/)myList)::add;
-
-        ((/*AbstractTaskList*/LinkedList<Task>)tasks).stream()
+        //myList=new ArrayTaskList();
+        //Consumer<Task> taskConsumer= ((ArrayTaskList/*AbstractTaskList*/)mylistOuter)::add;
+        /*
+        ((ArrayTaskList)((Iterable<Task>)tasks)).getStream()
                 .filter(t->{
                     return (t.nextTimeAfter(start).isBefore(end) && t.nextTimeAfter(start).isAfter(start));}
-                ).forEach(t->{taskConsumer.accept((Task) t);});
+                ).forEach(t->{taskConsumer.accept((Task) t);});*/
+        LinkedList<Task> myList=new LinkedList<Task>();
+        while (tasks.hasNext()){
+            Task t=tasks.next();
+            if(t.nextTimeAfter(start).isBefore(end) && t.nextTimeAfter(start).isAfter(start)){
+                myList.add(t);
+            }
+        }
 
-        return myList;
+        return myList.iterator();
     }
 
 
-    public static SortedMap<LocalDateTime, Set<Task>> calendar(Iterable<Task> tasks, LocalDateTime start,LocalDateTime end){
+    public static SortedMap<LocalDateTime, Set<Task>> calendar(Iterator<Task> tasks, LocalDateTime start,LocalDateTime end){
         Comparator<LocalDateTime> comparator=(ldt0,ldt1)->{return ldt0.compareTo(ldt1);};
         Comparator<Task> compareTask=(t1,t2)->{return t1.getTime().compareTo(t2.getTime());};
         SortedMap<LocalDateTime, Set<Task>> map= new TreeMap<LocalDateTime, Set<Task>>(comparator);
         //LinkedTaskListImpl list=(LinkedTaskListImpl)incoming(tasks,start,end);//Has repetitive tasks
-        LinkedList<Task> list=(LinkedList<Task>)incoming(tasks,start,end);
-        for(Task t:list){
+        Iterator<Task> list=incoming(tasks,start,end);
+
+        while(list.hasNext())
+        /*for(Task t:(Iterable <Task>)list)*/{
+            Task t=list.next();
             if(t.isRepeated()){//if t is repetitive, then maybe it has a lot of repetitions in the same period
                 //Duration dur0=Duration.between(t.getStartTime(),t.getEndTime()).dividedBy(t.getRepeatInterval());
                 for(LocalDateTime i=t.nextTimeAfter(start);i.isBefore(end) || i.isEqual(end);i=i.plus(t.getRepeatInterval(), ChronoUnit.HOURS)){

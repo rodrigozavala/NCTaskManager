@@ -231,13 +231,13 @@ class LinkedTaskListImplTest {
         assertTrue (!myTaskList4.equals(null));
 
         //LinkedTaskListImpl subList= (LinkedTaskListImpl) myTaskList.incoming(30,75);
-        LinkedTaskListImpl subList= (LinkedTaskListImpl) Tasks.incoming(myTaskList,e2,e1);
+        LinkedTaskListImpl subList= (LinkedTaskListImpl) Tasks.incoming(myTaskList.iterator(),e2,e1);
         System.out.println("1) The content of the sublist "+subList.size());
         for (int i=0;i< subList.size();i++){
             System.out.println(subList.getTask(i).getTitle());
             System.out.println(subList.getTask(i).getEndTime());
         }
-        LinkedTaskListImpl subList3= (LinkedTaskListImpl) Tasks.incoming(myTaskList,e2,e4);//myTaskList.incoming(3,150);
+        LinkedTaskListImpl subList3= (LinkedTaskListImpl) Tasks.incoming(myTaskList.iterator(),e2,e4);//myTaskList.incoming(3,150);
         System.out.println("2) The content of the new sublist: "+subList3.size());
         for (int i=0;i< subList3.size();i++){
             System.out.println(subList3.getTask(i).getTitle()+" is Active? "+subList3.getTask(i).isActive());
