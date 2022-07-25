@@ -24,7 +24,7 @@ class TaskImplTest {
         LocalDateTime e1=LocalDateTime.of(2020,Month.DECEMBER,12,8,30);
         LocalDateTime time1=LocalDateTime.of(2020,Month.SEPTEMBER,12,11,40);
         Duration dur=Duration.of(20,ChronoUnit.HOURS);
-        TaskImpl myTask=new TaskImpl("Running",s1,e1,dur);
+        TaskImpl myTask=new TaskImpl("Running",s1,e1,20);
         TaskImpl myTask2=new TaskImpl("Working",time1);
         assertTrue (false==myTask.isActive());
         assertTrue (false==myTask2.isActive());
@@ -73,13 +73,13 @@ class TaskImplTest {
         Duration int2= Duration.of(12, ChronoUnit.HOURS);
         Duration int3= Duration.of(8, ChronoUnit.HOURS);
         Duration int4= Duration.of(5, ChronoUnit.HOURS);
-        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,int1);
-        TaskImpl t2=new TaskImpl("Working",s2,e2,int2);
-        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,int3);
-        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,int4);
+        TaskImpl t1=new TaskImpl("Running for my life",s1,e1,10);
+        TaskImpl t2=new TaskImpl("Working",s2,e2,12);
+        TaskImpl t3= new TaskImpl("Eating candy",s3,e3,8);
+        TaskImpl t4= new TaskImpl("Eating candy with ease",s4,e4,5);
 
-        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,int2);
-        TaskImpl ty= new TaskImpl("Running in the 90's",e3,e1,int2);
+        TaskImpl t= new TaskImpl("Running in the 90's",e3,e1,12);
+        TaskImpl ty= new TaskImpl("Running in the 90's",e3,e1,12);
         try{
             TaskImpl tx= t.clone();
             int myhash=tx.hashCode();
