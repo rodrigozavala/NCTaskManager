@@ -17,24 +17,13 @@ public class Tasks {
      * "to" time.
      */
     public static Iterator<Task> incoming(Iterator<Task> tasks, LocalDateTime start, LocalDateTime end){
-        /*while(mylistOuter.size()!=0){
-            mylistOuter.remove(mylistOuter.getTask(0));
-        }*/
+
         if (start==null || end==null){
             throw new IllegalArgumentException("Time marks cannot be null");
         } else if (end.isBefore(start)|| end.isEqual(start)) {
             throw new IllegalArgumentException("'To' time mark cannot be minor or equal to 'from' time mark");
         }
 
-        //Iterable<Task> myList;
-        //myList=(tasks.getClass().equals(ArrayTaskListImpl.class))?new ArrayTaskListImpl():new LinkedTaskListImpl();
-        //myList=new ArrayTaskList();
-        //Consumer<Task> taskConsumer= ((ArrayTaskList/*AbstractTaskList*/)mylistOuter)::add;
-        /*
-        ((ArrayTaskList)((Iterable<Task>)tasks)).getStream()
-                .filter(t->{
-                    return (t.nextTimeAfter(start).isBefore(end) && t.nextTimeAfter(start).isAfter(start));}
-                ).forEach(t->{taskConsumer.accept((Task) t);});*/
         LinkedList<Task> myList=new LinkedList<Task>();
         while (tasks.hasNext()){
             Task t=tasks.next();
@@ -61,12 +50,13 @@ public class Tasks {
                 //Duration dur0=Duration.between(t.getStartTime(),t.getEndTime()).dividedBy(t.getRepeatInterval());
                 for(LocalDateTime i=t.nextTimeAfter(start);i.isBefore(end) || i.isEqual(end);i=i.plus(t.getRepeatInterval(), ChronoUnit.HOURS)){
                     if(map.keySet().contains(i)){
-
+                        /*
                         for (Map.Entry<LocalDateTime,Set<Task>>entry:map.entrySet()){
                             if(entry.getKey().isEqual(i)){
                                 (entry).getValue().add(t);
                             }
-                        }
+                        }*/
+                        map.get(i).add(t);
 
                     }else{
                         Set<Task> set1=new TreeSet<Task>(compareTask);
@@ -76,11 +66,13 @@ public class Tasks {
                 }
             }else{//t is non-repetitive
                 if(map.keySet().contains(t.getTime())){//map does contain the task's date
+                    /*
                     for (Map.Entry<LocalDateTime,Set<Task>>entry:map.entrySet()){
                         if(entry.getKey().isEqual(t.getTime())){
                             (entry).getValue().add(t);
                         }
-                    }
+                    }*/
+                    map.get(t.getTime()).add(t);
                 }else{//map does not contain the task's date
 
                     Set<Task> set=new TreeSet<Task>(compareTask);
